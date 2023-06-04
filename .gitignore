@@ -1,0 +1,9 @@
+venv
+.DS_Store
+.env
+
+**/*.docx
+**/*.pdf
+
+**/*.faiss
+**/*.pkl
