@@ -1,25 +1,26 @@
-import requests
-import json
 from dotenv import load_dotenv
+import os
 import openai
 
 #load environment variables
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_DEPLOYMENT_ENDPOINT = os.getenv("OPENAI_DEPLOYMENT_ENDPOINT")
-OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
-OPENAI_DEPLOYMENT_VERSION = os.getenv("OPENAI_DEPLOYMENT_VERSION")
-
-#init Azure OpenAI
 openai.api_type = "azure"
-openai.api_version = OPENAI_DEPLOYMENT_VERSION
-openai.api_base = OPENAI_DEPLOYMENT_ENDPOINT
-openai.api_key = OPENAI_API_KEY
-openai.log = "debug"
+openai.api_base = os.getenv("AZURE_OPENAI_API_ENDPOINT") 
+openai.api_version = os.getenv("AZURE_OPENAI_API_VERSION") 
+openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
 
-print('Sending a test completion job')
-start_phrase = 'Write a tagline for an ice cream shop. '
-response = openai.Completion.create(engine=OPENAI_DEPLOYMENT_NAME, prompt=start_phrase, max_tokens=10)
-text = response['choices'][0]['text'].replace('\n', '').replace(' .', '.').strip()
-print(start_phrase+text)
+deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+
+response = openai.ChatCompletion.create(
+    engine=deployment_name,
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Does Azure OpenAI support customer managed keys?"},
+        {"role": "assistant", "content": "Yes, customer managed keys are supported by Azure OpenAI."},
+        {"role": "user", "content": "Do other Azure Cognitive Services support this too?"}
+    ]
+)
+
+print(response)
+print(response['choices'][0]['message']['content'])

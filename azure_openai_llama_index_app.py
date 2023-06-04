@@ -1,4 +1,3 @@
-from langchain.vectorstores import FAISS
 from dotenv import load_dotenv
 import openai
 import os
@@ -12,13 +11,13 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 #load environment variables
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_DEPLOYMENT_ENDPOINT = os.getenv("OPENAI_DEPLOYMENT_ENDPOINT")
-OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
-OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME")
-OPENAI_EMBEDDING_DEPLOYMENT_NAME = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT_NAME")
-OPENAI_EMBEDDING_MODEL_NAME = os.getenv("OPENAI_EMBEDDING_MODEL_NAME")
-OPENAI_DEPLOYMENT_VERSION = os.getenv("OPENAI_DEPLOYMENT_VERSION")
+OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+OPENAI_DEPLOYMENT_ENDPOINT = os.getenv("AZURE_OPENAI_API_ENDPOINT")
+OPENAI_DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+OPENAI_MODEL_NAME = os.getenv("AZURE_OPENAI_MODEL_NAME")
+OPENAI_EMBEDDING_DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME")
+OPENAI_EMBEDDING_MODEL_NAME = os.getenv("AZURE_OPENAI_EMBEDDING_MODEL_NAME")
+OPENAI_DEPLOYMENT_VERSION = os.getenv("AZURE_OPENAI_API_VERSION")
 
 #init Azure OpenAI
 openai.api_type = "azure"
@@ -39,7 +38,7 @@ if __name__ == "__main__":
                       openai_api_base=OPENAI_DEPLOYMENT_ENDPOINT,
                       openai_api_version=OPENAI_DEPLOYMENT_VERSION,
                       openai_api_key=OPENAI_API_KEY)
-    embeddings = OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL_NAME, chunk_size=1)
+    embeddings = OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL_NAME, openai_api_key=OPENAI_API_KEY, chunk_size=1)
 
     #load the faiss vector store we saved into memory
     vectorStore = FAISS.load_local("./dbs/documentation/faiss_index", embeddings)
